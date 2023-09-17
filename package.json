@@ -1,0 +1,22 @@
+{
+  "name": "authentication_app",
+  "version": "1.0.0",
+  "description": "Authentication system for user",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Authentication",
+    "user"
+  ],
+  "author": "Shivaraj M Shetty",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

@@ -1,8 +1,24 @@
 // imports
 const express = require('express'); //import the express module
+const expressLayouts = require('express-ejs-layouts'); //import the express layouts module
+// const router = require('./routes'); //import the router
 
 const app = express(); //create the express app
 const port = 8000; //define the port
+
+// set ejs as view engine
+app.set('view engine', 'ejs');
+app.set('views', './views'); //set the path for the views folder
+
+// extract the styles and scripts from the sub-pages to the layout
+app.set('layout extractStyles', true);
+app.set('layout extractScripts', true);
+
+// middleware to access the static files
+app.use(express.static('./assets'));
+
+// middleware to use express layouts
+app.use(expressLayouts);
 
 // middleware to route the requests
 app.use('/', require('./routes'));

@@ -4,6 +4,8 @@ const express = require('express'); //import the express module
 const app = express(); //create the express app
 const port = 8000; //define the port
 
+// middleware to route the requests
+app.use('/', require('./routes'));
 
 // listen on the server
 app.listen(port, function(err){

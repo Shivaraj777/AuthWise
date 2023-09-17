@@ -1,0 +1,21 @@
+
+
+#sign-in-form-container{
+    position: absolute;
+    top: 13%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#sign-in-form{
+    height: 28rem;
+    width: 25em;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    box-shadow: 0 0 10px #888888;;
+    box-sizing: border-box;
+    padding: 15px;
+}

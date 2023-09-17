@@ -1,1 +1,7 @@
-<h1>Authwise <%= title %></h1>
+
+
+<% if(!locals.user){ %>
+    <%- include('_login'); -%>
+<% }else{ %>
+    <h1>Authwise <%= title %></h1>
+<% } %>

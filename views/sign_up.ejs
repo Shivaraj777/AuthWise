@@ -1,27 +1,27 @@
 <link type="text/css" rel="stylesheet" href="/css/sign_up.css" >
 
 <div id="sign-up-form-container">
-    <form id="sign-up-form" class="row d-flex justify-content-center align-items-center" action="" method="post">
+    <form id="sign-up-form" class="row d-flex justify-content-center align-items-center" action="/user/create" method="post">
         <div class="mb-3 mt-3">
             <label for="name">Name:</label>
-            <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
+            <input type="text" class="form-control" id="name" placeholder="Enter name" name="name" required>
         </div>
 
         <div class="mb-3">
             <label for="email">Email:</label>
-            <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+            <input type="email" class="form-control" id="email" placeholder="Enter email" name="email" required>
         </div>
 
         <div class="mb-3">
             <label for="pwd">Password:</label>
-            <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pswd">
+            <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="password" required>
         </div>
 
         <div class="mb-3">
             <label for="confirm-pwd">Confirm Password:</label>
-            <input type="password" class="form-control" id="confirm-pwd" placeholder="Confirm password" name="confirm-pswd">
+            <input type="password" class="form-control" id="confirm-pwd" placeholder="Confirm password" name="confirm_password" required>
         </div>
 
-        <button type="submit" class="btn btn-primary mt-4 mb-4">Sign Up</button>
+        <button class="btn btn-primary mt-4 mb-4">Sign Up</button>
     </form>
 </div>

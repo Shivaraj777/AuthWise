@@ -1,7 +1,7 @@
 // imports
 const express = require('express'); //import the express module
 const expressLayouts = require('express-ejs-layouts'); //import the express layouts module
-// const router = require('./routes'); //import the router
+const db = require('./config/mongoose'); //import the mongoose config module
 
 const app = express(); //create the express app
 const port = 8000; //define the port

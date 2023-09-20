@@ -6,12 +6,12 @@
         </div>
         <div class="card-body">
             <h4 class="card-title"><%= locals.user.name %></h4>
-            <p class="card-text"><b>Email:</b> <%= locals.user.email %></p>
+            <p class="card-text"><b>Email:</b> <%= locals.user.email %> </p>
             <a id="enable-edit-pswd" href="#demo" class="btn" data-bs-toggle="collapse">
                 <b>Edit password</b>
             </a>
             <div id="demo" class="collapse">
-                <form id="update-password-form" class="row d-flex justify-content-center align-items-center" action="/user/create-session" method="post">
+                <form id="update-password-form" class="row d-flex justify-content-center align-items-center" action="/user/update-password" method="post">
                     <div class="mb-3 mt-3">
                         <!-- <label for="current-pwd">Enter current password:</label> -->
                         <input type="password" class="form-control" id="current-pwd" placeholder="Enter current password" name="current_password">

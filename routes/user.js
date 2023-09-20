@@ -13,6 +13,7 @@ router.post('/create-session', passport.authenticate(
     {failureRedirect: '/'},
 ), usersController.createSession); //route the request to createSession action of users_controller
 router.get('/sign-out', usersController.destroySession); //route the request to destroySession action of users_controller
+router.post('/update-password', usersController.updatePassword); //route the request to updatePassword action of users_controller
 
 // export the router
 module.exports = router;

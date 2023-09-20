@@ -7,6 +7,11 @@ const saltRounds = 10; //number of rounds required for hashing
 
 // action to render sign-up page
 module.exports.signUp = function(req, res){
+    // if the user is already sgned in, redirect to user-profile page
+    if(req.isAuthenticated()){
+        return res.redirect('/user/profile');
+    }
+
     return res.render('sign_up', {
         title: 'Sign Up page'
     });

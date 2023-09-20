@@ -6,20 +6,28 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
+            <% if(locals.user){ %>
+
+            <% } %>
             <div class="collapse navbar-collapse" id="mynavbar">
                 <ul class="navbar-nav me-auto">
                     <!-- <li class="nav-item">
                         <a class="nav-link" href="javascript:void(0)">Link</a>
                     </li> -->
                 </ul>
-                <ul class="navbar-nav d-flex">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Default User</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/user/sign-out">Logout</a>
-                    </li>
-                </ul>
+
+                <% if(locals.user){ %>
+                    <ul class="navbar-nav d-flex">
+                        <li class="nav-item d-flex">
+                            <img src="/images/profile.png" alt="user-profile-pic" height="35px" width="35px">
+                            <a class="nav-link" href="#"><%= locals.user.name %></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/user/sign-out">Logout</a>
+                        </li>
+                    </ul>
+                <% } %>
             </div>
         </div>
     </nav>

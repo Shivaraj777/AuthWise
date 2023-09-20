@@ -3,6 +3,10 @@ const express = require('express'); //import the express module
 const expressLayouts = require('express-ejs-layouts'); //import the express layouts module
 const db = require('./config/mongoose'); //import the mongoose config module
 const cookieParser = require('cookie-parser'); //import cookie parser module
+const passport = require('passport'); //import the passport module
+const passportLocal = require('./config/passport_local_strategy'); //import the passport_local_strategy config module
+const session = require('express-session'); //import express session module
+const MongoStore = require('connect-mongo'); //import the connect-mongo module
 
 const app = express(); //create the express app
 const port = 8000; //define the port
@@ -26,6 +30,33 @@ app.use(express.static('./assets'));
 
 // middleware to use express layouts
 app.use(expressLayouts);
+
+//use express session to maintain the session cookies
+app.use(session({
+    name: 'AuthWise', //name of the session cookie
+    secret: 'randomGenerator', //secret key used to encrypt the session cookie
+    saveUninitialized: false,  // if the user is not logged in, do not save the session cookie
+    resave: false,   //if the session is not modified, do not save it
+    cookie: {
+        maxAge: (1000 * 60 * 100)  //max time in milliseconds after which the session cookie expires
+    },
+    store: new MongoStore(
+        {
+            mongoUrl: 'mongodb://127.0.0.1/AuthWise_app',  //connecting to the database
+            autoRemove: 'disabled'  //do not remove the session from the database even if it expires
+        },
+        function(err){
+            console.log(err || 'connect-mongodb setup ok');
+        }
+    )
+}));
+
+//middleware to intialize and maintain the user session
+app.use(passport.initialize());
+app.use(passport.session());
+
+//middleware to set user data in views
+app.use(passport.setAuthenticatedUser);
 
 // middleware to route the requests
 app.use('/', require('./routes'));

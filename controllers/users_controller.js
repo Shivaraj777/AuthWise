@@ -12,6 +12,13 @@ module.exports.signUp = function(req, res){
     });
 }
 
+// action to render user-profile page
+module.exports.userProfile = function(req, res){
+    return res.render('user_profile', {
+        title: 'User Profile Page'
+    });
+}
+
 // action to sign-up a user
 module.exports.create = async function(req, res){
     try{

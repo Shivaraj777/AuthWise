@@ -6,6 +6,7 @@ const router = express.Router();
 
 // route the requests
 router.get('/sign-up', usersController.signUp); //route the request to signUp action of users_controller
+router.get('/profile', passport.checkAuthentication, usersController.userProfile); //route the request to userProfile action of users_controller
 router.post('/create', usersController.create); //route the request to create action of users_controller
 router.post('/create-session', passport.authenticate(
     'local', //use passport-local strategy

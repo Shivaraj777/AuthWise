@@ -44,3 +44,14 @@ module.exports.createSession = function(req, res){
     console.log('Logged in successfully');
     return res.redirect('/');
 }
+
+// destroy user session/sign-out
+module.exports.destroySession = function(req, res){
+    req.logout((err) =>{
+        if(err){
+            return next(err);
+        }
+
+        res.redirect('/');
+    });
+}

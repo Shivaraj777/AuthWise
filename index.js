@@ -5,6 +5,7 @@ const db = require('./config/mongoose'); //import the mongoose config module
 const cookieParser = require('cookie-parser'); //import cookie parser module
 const passport = require('passport'); //import the passport module
 const passportLocal = require('./config/passport_local_strategy'); //import the passport_local_strategy config module
+const passportGoogle = require('./config/passport-google-oauth2-strategy'); //import the passport google-oauth2 strategy module
 const session = require('express-session'); //import express session module
 const MongoStore = require('connect-mongo'); //import the connect-mongo module
 const flash = require('connect-flash'); //import the connect-flash module

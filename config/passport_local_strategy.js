@@ -9,8 +9,9 @@ const bcrypt = require('bcrypt'); //import bcrypt module
 passport.use(new LocalStrategy({    //tell passport to use local strategy for authentication
         //defining the fields to be used for authentication
         usernameField: 'email',
+        passReqToCallback: true
     },
-    function(email, password, done){   //done is a callback function which handles whether the authentication success and failure
+    function(req, email, password, done){   //done is a callback function which handles whether the authentication success and failure
         //find a user and establish the identity
         User.findOne({email: email})
             .then(user => {
@@ -19,6 +20,7 @@ passport.use(new LocalStrategy({    //tell passport to use local strategy for au
                         //if user not found or password does not match
                         if(!user || !doesPasswordMatch){
                             console.log(`Invalid Username/Password`);
+                            req.flash('error', 'Invalid Username/Password');
                             return done(null, false);  //null -> no error, false -> autentication failed
                         }
                         //if user is found and password matches we return the user

@@ -7,6 +7,8 @@ const passport = require('passport'); //import the passport module
 const passportLocal = require('./config/passport_local_strategy'); //import the passport_local_strategy config module
 const session = require('express-session'); //import express session module
 const MongoStore = require('connect-mongo'); //import the connect-mongo module
+const flash = require('connect-flash'); //import the connect-flash module
+const customMware = require('./config/middleware'); //import the custom middleware module
 
 const app = express(); //create the express app
 const port = 8000; //define the port
@@ -57,6 +59,10 @@ app.use(passport.session());
 
 //middleware to set user data in views
 app.use(passport.setAuthenticatedUser);
+
+// middleware to display flash messages
+app.use(flash());
+app.use(customMware.setFlash); //set the flash messages in response locals
 
 // middleware to route the requests
 app.use('/', require('./routes'));

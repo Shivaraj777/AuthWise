@@ -28,7 +28,8 @@ module.exports.userProfile = function(req, res){
 module.exports.create = async function(req, res){
     try{
         if(req.body.password !== req.body.confirm_password){
-            console.log('Password do not match');
+            // console.log('Passwords do not match');
+            req.flash('error', 'Passwords do not match') //adding flash notifications
             return res.redirect('back');
         }
 
@@ -40,9 +41,11 @@ module.exports.create = async function(req, res){
             const hashedPassword = await bcrypt.hash(req.body.password, saltRounds); // hash the password
 
             await User.create({...req.body, password: hashedPassword});
+            req.flash('success', 'User registration successfull, please sign-in to continue');
             return res.redirect('/');
         }else{
-            console.log('User already exists');
+            // console.log('User already exists, please login');
+            req.flash('error', 'User already exists, please login');
             return res.redirect('/');
         }
     }catch(err){
@@ -53,7 +56,8 @@ module.exports.create = async function(req, res){
 
 //sign in and create a session for the user
 module.exports.createSession = function(req, res){
-    console.log('Logged in successfully');
+    // console.log('Logged in successfully');
+    req.flash('success', 'Logged-in successfully');
     return res.redirect('/');
 }
 
@@ -64,7 +68,8 @@ module.exports.destroySession = function(req, res){
             return next(err);
         }
 
-        res.redirect('/');
+        req.flash('success', 'Logged out successfully');
+        return res.redirect('/');
     });
 }
 
@@ -81,13 +86,15 @@ module.exports.updatePassword = async function(req, res){
 
             // if entered current password is incorrect
             if(!doesCurrentPasswordMatch){
-                console.log('Current password is not correct, Please try again');
+                // console.log('Current password is not correct, Please try again');
+                req.flash('error', 'Current password is not correct, Please try again');
                 return res.redirect('back');
             }
 
             // if new password and confirm new password fields are not equal
             if(req.body.new_password !== req.body.confirm_new_password){
-                console.log('New passwords does not match, please try again');
+                // console.log('New passwords does not match, please try again');
+                req.flash('error', 'New passwords does not match, please try again');
                 return res.redirect('back');
             }
 
@@ -95,6 +102,7 @@ module.exports.updatePassword = async function(req, res){
             const hashedPassword = await bcrypt.hash(req.body.new_password, saltRounds);
             await User.findByIdAndUpdate(user._id, {$set: {password: hashedPassword}}, {new: true});
 
+            req.flash('success', 'Password updated successfully');
             return res.redirect('back');
         }else{
             throw "User not found";

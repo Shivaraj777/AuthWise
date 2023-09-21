@@ -4,6 +4,7 @@
 const User = require('../models/user'); //import the user model
 const bcrypt = require('bcrypt'); //import bcrypt module
 const saltRounds = 10; //number of rounds required for hashing
+const usersMailer = require('../mailers/users_mailer'); //import the users_mailer module
 
 // action to render sign-up page
 module.exports.signUp = function(req, res){
@@ -34,13 +35,16 @@ module.exports.create = async function(req, res){
         }
 
         // search the user in database
-        const user = await User.findOne({email: req.body.email});
+        let user = await User.findOne({email: req.body.email});
 
         // if user does not exists, create new user
         if(!user){
             const hashedPassword = await bcrypt.hash(req.body.password, saltRounds); // hash the password
+            user = await User.create({...req.body, password: hashedPassword});
 
-            await User.create({...req.body, password: hashedPassword});
+            // send mail to the user on successfull registration
+            usersMailer.registration(user);
+
             req.flash('success', 'User registration successfull, please sign-in to continue');
             return res.redirect('/');
         }else{

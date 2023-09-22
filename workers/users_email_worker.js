@@ -6,12 +6,14 @@ const usersMailer = require('../mailers/users_mailer'); //import users_mailer mo
 
 // process the jobs in queue
 queue.process('emails', function(job, done){
-    // console.log(job);
+    // console.log(job.data.data);
     console.log(`Emails worker is processing a job: ${job.data.data}`);
 
     // execute the jobs
     if(job.data.subType === 'registration'){
         usersMailer.registration(job.data.data);
+    }else if(job.data.subType === 'resetPassword'){
+        usersMailer.resetPasswordLink(job.data.data.user, job.data.data.resetPasswordToken);
     }
 
     // tell the queue that job is done

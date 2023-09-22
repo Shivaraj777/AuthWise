@@ -5,6 +5,8 @@ const User = require('../models/user'); //import the user model
 const bcrypt = require('bcrypt'); //import bcrypt module
 const saltRounds = 10; //number of rounds required for hashing
 const usersMailer = require('../mailers/users_mailer'); //import the users_mailer module
+const queue = require('../config/kue'); //import the kue config
+const usersEmailWorker = require('../workers/users_email_worker'); //import the users email worker module
 
 // action to render sign-up page
 module.exports.signUp = function(req, res){
@@ -42,8 +44,20 @@ module.exports.create = async function(req, res){
             const hashedPassword = await bcrypt.hash(req.body.password, saltRounds); // hash the password
             user = await User.create({...req.body, password: hashedPassword});
 
-            // send mail to the user on successfull registration
-            usersMailer.registration(user);
+            /* 
+                create a new job to send e-mails on successsfull registration.
+                if queue does not exists, new queue is created and job is added.
+                if queue exists, job is added to the queue.
+                emails: name of the queue, user: the data passed to the worker
+             */
+            let jobData = {subType: 'registration', data: user};
+            let job = queue.create('emails', jobData).save(function(err){
+                if(err){
+                    console.log(`Error in creating queue ${err}`);
+                    return;
+                }
+                console.log('Job enqueued', job.id);
+            });
 
             req.flash('success', 'User registration successfull, please sign-in to continue');
             return res.redirect('/');

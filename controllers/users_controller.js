@@ -20,6 +20,13 @@ module.exports.signUp = function(req, res){
     });
 }
 
+// action to render forgot password page
+module.exports.forgotPassword = function(req, res){
+    return res.render('forgot_password', {
+        title: 'Forgot Password page'
+    });
+}
+
 // action to render user-profile page
 module.exports.userProfile = function(req, res){
     return res.render('user_profile', {

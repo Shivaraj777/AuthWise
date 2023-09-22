@@ -20,5 +20,8 @@ router.get('/auth/google', passport.authenticate('google', {scope: ['profile', '
 //router for google callback url to create the session for user
 router.get('/auth/google/callback', passport.authenticate('google', {failureRedirect: '/'}), usersController.createSession);
 
+// routes for forgot password
+router.get('/forgot-password', usersController.forgotPassword); //route the request to forgotPassword action of users_controller
+
 // export the router
 module.exports = router;

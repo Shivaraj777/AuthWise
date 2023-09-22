@@ -6,12 +6,35 @@ const RestPasswordToken = require('../models/resetPasswordToken'); //import the 
 const crypto = require('crypto'); //importing the crypto module
 const queue = require('../config/kue'); //import the kue config
 const usersEmailWorker = require('../workers/users_email_worker'); //import the users email worker module
+const ResetPasswordToken = require('../models/resetPasswordToken');
 
 // action to render forgot password page
 module.exports.forgotPassword = function(req, res){
     return res.render('forgot_password', {
         title: 'Forgot Password page'
     });
+}
+
+// action to render reset password page
+module.exports.displayResetPasswordPage = async function(req, res){
+    try{
+        // check if access token is valid
+        const resetPasswordToken = await ResetPasswordToken.findOne({accessToken: req.params.accessToken}).populate('user');
+
+        // if accessToken is not expired render the page
+        if(resetPasswordToken.isValid){
+            return res.render('reset_password', {
+                title: 'Reset Password page',
+                tempUser: resetPasswordToken.user
+            });
+        }else{
+            req.flash('error', 'Reset Password link has expired, Please retry');
+            return res.redirect('/');
+        }
+    }catch(err){
+        console.log(`Error: ${err}`);
+        return;
+    }
 }
 
 // action to create access token for user to reset password

@@ -9,6 +9,7 @@ console.log('Router loaded');
 // route the requests
 router.get('/', homeController.home); //route the request to home action of home_Controller
 router.use('/user', require('./user')); //router the request to users route
+router.use('/forgot-password', require('./forgotPassword')); //route the request to forgotPassword route
 
 // export the router
 module.exports = router;

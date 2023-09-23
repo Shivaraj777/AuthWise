@@ -7,6 +7,8 @@ const crypto = require('crypto'); //importing the crypto module
 const queue = require('../config/kue'); //import the kue config
 const usersEmailWorker = require('../workers/users_email_worker'); //import the users email worker module
 const ResetPasswordToken = require('../models/resetPasswordToken');
+const bcrypt = require('bcrypt'); //import the bcrypt module
+const saltRounds = 10;
 
 // action to render forgot password page
 module.exports.forgotPassword = function(req, res){
@@ -25,7 +27,7 @@ module.exports.displayResetPasswordPage = async function(req, res){
         if(resetPasswordToken.isValid){
             return res.render('reset_password', {
                 title: 'Reset Password page',
-                tempUser: resetPasswordToken.user
+                resetPasswordToken: resetPasswordToken
             });
         }else{
             req.flash('error', 'Reset Password link has expired, Please retry');
@@ -66,6 +68,39 @@ module.exports.generateAccessToken = async function(req, res){
         }else{
             req.flash('error', 'User does not exist, please use a valid email address');
             return res.redirect('back');
+        }
+    }catch(err){
+        console.log(`Error: ${err}`);
+        return;
+    }
+}
+
+// action to reset user password
+module.exports.resetPassword = async function(req, res){
+    try{
+        // check if access token is valid
+        const resetPasswordToken = await ResetPasswordToken.findOne({accessToken: req.params.accessToken});
+
+        // if validation is successfull
+        if(resetPasswordToken.isValid){
+            // if passwords are not equal
+            if(req.body.new_password !== req.body.confirm_new_password){
+                req.flash('error', 'New passwords do not match, please enter same password in both fields');
+                return res.redirect('back');
+            }
+
+            // hash the password and reset it in db
+            const hashedPassword = await bcrypt.hash(req.body.new_password, saltRounds);
+            await User.findByIdAndUpdate(resetPasswordToken.user, {$set : {password: hashedPassword}}, {new: true});
+
+            // deactive the access token
+            await ResetPasswordToken.findOneAndUpdate({accessToken: req.params.accessToken}, {$set: {isValid: false}}, {new: true});
+
+            req.flash('success', 'Password successfully reset, login to continue');
+            return res.redirect('/');
+        }else{
+            req.flash('error', 'Reset password link expired, please try again');
+            return res.redirect('/');
         }
     }catch(err){
         console.log(`Error: ${err}`);

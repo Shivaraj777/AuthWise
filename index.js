@@ -14,7 +14,7 @@ const recaptcha = require('express-recaptcha');
 const env = require('./config/environment');
 
 const app = express(); //create the express app
-const port = 8000; //define the port
+const port = process.env.port || 8000; //define the port
 
 // Configure reCAPTCHA
 recaptcha.init(env.google_captcha_site_key, env.google_capthca_secret_key);

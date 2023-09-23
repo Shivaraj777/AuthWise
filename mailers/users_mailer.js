@@ -1,4 +1,4 @@
-// Description: This file conatins functionality to send emails to the user when any action related to user is performed
+// Description: This file contains functionality to send emails to the user when any action related to user is performed
 
 // imports
 const nodemailer = require('../config/nodemailer'); //import the nodemailer config

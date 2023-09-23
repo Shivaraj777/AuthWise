@@ -1,9 +1,11 @@
 //Description: this file is used to connect to the database using mongoose
 
-//require the mongoose module
+//imports
 const mongoose = require('mongoose');
+const env = require('./environment');
+
 //connect to mongodb database with the help of mongoose
-mongoose.connect('mongodb://127.0.0.1/AuthWise_app');
+mongoose.connect(env.mongo_CONNECT_URL);
 
 //establish the connection to the database
 const db = mongoose.connection;

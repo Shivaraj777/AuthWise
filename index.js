@@ -43,7 +43,7 @@ app.use(expressLayouts);
 //use express session to maintain the session cookies
 app.use(session({
     name: 'AuthWise', //name of the session cookie
-    secret: 'randomGenerator', //secret key used to encrypt the session cookie
+    secret: env.session_cookie_key, //secret key used to encrypt the session cookie
     saveUninitialized: false,  // if the user is not logged in, do not save the session cookie
     resave: false,   //if the session is not modified, do not save it
     cookie: {
@@ -51,7 +51,7 @@ app.use(session({
     },
     store: new MongoStore(
         {
-            mongoUrl: 'mongodb://127.0.0.1/AuthWise_app',  //connecting to the database
+            mongoUrl: env.mongo_CONNECT_URL,  //connecting to the database
             autoRemove: 'disabled'  //do not remove the session from the database even if it expires
         },
         function(err){

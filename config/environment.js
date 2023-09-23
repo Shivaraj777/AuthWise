@@ -16,7 +16,9 @@ const development = {
     },
     google_client_ID: process.env.AUTHWISE_GOOGLE_CLIENT_ID,
     google_client_secret: process.env.AUTHWISE_GOOGLE_CLIENT_SECRET,
-    google_callback_URL: process.env.AUTHWISE_GOOGLE_CALLBACK_URL
+    google_callback_URL: process.env.AUTHWISE_GOOGLE_CALLBACK_URL,
+    google_captcha_site_key: process.env.CAPTCHA_SITE_KEY,
+    google_capthca_secret_key: process.env.CAPTCHA_SECRET_KEY
 }
 
 // export the module

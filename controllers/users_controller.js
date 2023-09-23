@@ -7,6 +7,8 @@ const saltRounds = 10; //number of rounds required for hashing
 const usersMailer = require('../mailers/users_mailer'); //import the users_mailer module
 const queue = require('../config/kue'); //import the kue config
 const usersEmailWorker = require('../workers/users_email_worker'); //import the users email worker module
+const recaptcha = require('express-recaptcha');
+const env = require('../config/environment');
 
 // action to render sign-up page
 module.exports.signUp = function(req, res){
@@ -16,7 +18,9 @@ module.exports.signUp = function(req, res){
     }
 
     return res.render('sign_up', {
-        title: 'Sign Up page'
+        title: 'Sign Up page',
+        captcha: recaptcha.render(),
+        googleCaptchSiteKey: env.google_captcha_site_key
     });
 }
 
@@ -30,41 +34,46 @@ module.exports.userProfile = function(req, res){
 // action to sign-up a user
 module.exports.create = async function(req, res){
     try{
-        if(req.body.password !== req.body.confirm_password){
-            // console.log('Passwords do not match');
-            req.flash('error', 'Passwords do not match') //adding flash notifications
-            return res.redirect('back');
-        }
-
-        // search the user in database
-        let user = await User.findOne({email: req.body.email});
-
-        // if user does not exists, create new user
-        if(!user){
-            const hashedPassword = await bcrypt.hash(req.body.password, saltRounds); // hash the password
-            user = await User.create({...req.body, password: hashedPassword});
-
-            /* 
-                create a new job to send e-mails on successsfull registration.
-                if queue does not exists, new queue is created and job is added.
-                if queue exists, job is added to the queue.
-                emails: name of the queue, user: the data passed to the worker
-             */
-            let jobData = {subType: 'registration', data: user};
-            let job = queue.create('emails', jobData).save(function(err){
-                if(err){
-                    console.log(`Error in creating queue ${err}`);
-                    return;
-                }
-                console.log('Job enqueued', job.id);
-            });
-
-            req.flash('success', 'User registration successfull, please sign-in to continue');
-            return res.redirect('/');
+        if(!req.recaptcha.error){
+            if(req.body.password !== req.body.confirm_password){
+                // console.log('Passwords do not match');
+                req.flash('error', 'Passwords do not match') //adding flash notifications
+                return res.redirect('back');
+            }
+    
+            // search the user in database
+            let user = await User.findOne({email: req.body.email});
+    
+            // if user does not exists, create new user
+            if(!user){
+                const hashedPassword = await bcrypt.hash(req.body.password, saltRounds); // hash the password
+                user = await User.create({...req.body, password: hashedPassword});
+    
+                /* 
+                    create a new job to send e-mails on successsfull registration.
+                    if queue does not exists, new queue is created and job is added.
+                    if queue exists, job is added to the queue.
+                    emails: name of the queue, user: the data passed to the worker
+                 */
+                let jobData = {subType: 'registration', data: user};
+                let job = queue.create('emails', jobData).save(function(err){
+                    if(err){
+                        console.log(`Error in creating queue ${err}`);
+                        return;
+                    }
+                    console.log('Job enqueued', job.id);
+                });
+    
+                req.flash('success', 'User registration successfull, please sign-in to continue');
+                return res.redirect('/');
+            }else{
+                // console.log('User already exists, please login');
+                req.flash('error', 'User already exists, please login');
+                return res.redirect('/');
+            }
         }else{
-            // console.log('User already exists, please login');
-            req.flash('error', 'User already exists, please login');
-            return res.redirect('/');
+            req.flash('error', 'Captcha verification failed');
+            return res.redirect('back');
         }
     }catch(err){
         console.log(`Error: ${err}`);

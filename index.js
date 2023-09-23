@@ -10,9 +10,14 @@ const session = require('express-session'); //import express session module
 const MongoStore = require('connect-mongo'); //import the connect-mongo module
 const flash = require('connect-flash'); //import the connect-flash module
 const customMware = require('./config/middleware'); //import the custom middleware module
+const recaptcha = require('express-recaptcha');
+const env = require('./config/environment');
 
 const app = express(); //create the express app
 const port = 8000; //define the port
+
+// Configure reCAPTCHA
+recaptcha.init(env.google_captcha_site_key, env.google_capthca_secret_key);
 
 // set ejs as view engine
 app.set('view engine', 'ejs');
@@ -23,6 +28,7 @@ app.set('layout extractStyles', true);
 app.set('layout extractScripts', true);
 
 // middleware to parse form data
+app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
 // middleware to read and write into cookies

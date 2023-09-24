@@ -15,17 +15,27 @@ passport.use(new LocalStrategy({    //tell passport to use local strategy for au
         //find a user and establish the identity
         User.findOne({email: email})
             .then(user => {
-                bcrypt.compare(password, user.password)
-                    .then(function(doesPasswordMatch) {
+                if(user){
+                    bcrypt.compare(password, user.password)
+                    .then(doesPasswordMatch => {
                         //if user not found or password does not match
-                        if(!user || !doesPasswordMatch){
+                        if(!doesPasswordMatch){
                             console.log(`Invalid Username/Password`);
                             req.flash('error', 'Invalid Username/Password');
                             return done(null, false);  //null -> no error, false -> autentication failed
                         }
                         //if user is found and password matches we return the user
                         return done(null, user);    //null -> no error, user -> authentication success
+                    })
+                    .catch(err => {
+                        console.log(`Error: ${err}`);
+                        return done(null, false);
                     });
+                }else{
+                    console.log('Invalid Username')
+                    req.flash('error', 'Invalid Username');
+                    return done(null, false);
+                }
             })
             .catch(err => {         //if there is an error in finding the user
                 console.log(`Error in finding user --> Passport`);

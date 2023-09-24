@@ -34,7 +34,15 @@ module.exports.userProfile = function(req, res){
 // action to sign-up a user
 module.exports.create = async function(req, res){
     try{
+        // if captcha is verified successfully proceed to register user
         if(!req.recaptcha.error){
+            // if name or email is empty
+            if(req.body.name === '' || req.body.email === ''){
+                req.flash('error', 'Name/Email should not be blank');
+                return res.redirect('back');
+            }
+
+            // if passwords do not match
             if(req.body.password !== req.body.confirm_password){
                 // console.log('Passwords do not match');
                 req.flash('error', 'Passwords do not match') //adding flash notifications

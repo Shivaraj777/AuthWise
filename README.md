@@ -36,7 +36,7 @@ Create a complete authentication system which can be used as a starter code for 
 ## Application/Project setup
 
 - Clone the git repository in your local machine by using command,
-    - git clone https://github.com/Shivaraj777/placement_cell.git
+    - git clone https://github.com/Shivaraj777/AuthWise.git
 - Open the project code in VS code.
 - Open the terminal and go to root directory of the project.
 - Use command, npm install to install all the dependencies.
